@@ -1,15 +1,9 @@
 package Echo;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Date;
 
 public class EchoServer extends Server {
 
@@ -29,9 +23,7 @@ public class EchoServer extends Server {
 			is.read(buff);
 			
 			String clientMessage = buff.toString();
-			Date date = new Date();
-			System.out.println("Client Message: '" + clientMessage + "' sent " + date.getYear() + ":" + date.getDate()
-					+ ":" + date.getTime());
+			System.out.println("Client Message: '" + clientMessage + "' sent by client " + socket.getInetAddress() );
 
 			os = new OutputStreamWriter(socket.getOutputStream());
 			byte[] revBuff = new byte[buff.length];
