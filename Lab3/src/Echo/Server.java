@@ -16,7 +16,6 @@ public abstract class Server {
 	private final static int DEFAULT_PORT = 30000;
 	private ServerSocket serverSocket;
 	private ArrayList<InetAddress> connectedClients;
-	private InputStream input;
 	private volatile boolean isShutDown = false;
 
 	public Server() throws IOException {

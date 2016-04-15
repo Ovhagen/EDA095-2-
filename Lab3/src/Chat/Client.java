@@ -1,4 +1,4 @@
-package Echo;
+package Chat;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -15,7 +15,6 @@ import java.util.Scanner;
 public class Client {
 
 	private static int port = 30000;
-	private Socket socket;
 
 	public static void main(String[] args) throws Exception {
 		System.out.println("Press enter for localhost or specify another host.");
@@ -54,19 +53,14 @@ public class Client {
 	private static void readResponse(Socket socket) {
 		try {
 			InputStream in = socket.getInputStream();
-			ByteArrayOutputStream ba = null;
 			String serverResponse;
 			byte[] inBuffer = new byte[4096];
-			int bytes;
-			while ((bytes = in.read(inBuffer)) != -1) {
-				ba.write(inBuffer, 0, bytes);
-			}
+			in.read(inBuffer);
 
-			serverResponse = ba.toString();
+			serverResponse = inBuffer.toString();
 
 			System.out.println("Response from server: " + serverResponse);
-			ba.flush();
-			ba.close();
+
 		} catch (IOException i) {
 			i.printStackTrace();
 		}
@@ -76,13 +70,8 @@ public class Client {
 	private static void writeMessage(Socket socket, byte[] message) {
 		try {
 			OutputStream out = socket.getOutputStream();
-			byte[] outBuffer = new byte[4096];
-			for (int i = message.length; i <= 0; i--) {
-				out.write(outBuffer, 0, message.length);
-			}
+			out.write(message, 0, message.length);
 			out.flush();
-			out.close();
-			socket.close();
 		} catch (IOException i) {
 			i.printStackTrace();
 		}
