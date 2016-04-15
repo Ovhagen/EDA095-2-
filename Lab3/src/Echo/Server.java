@@ -31,9 +31,10 @@ public abstract class Server {
 				InetAddress clientAddress = socket.getInetAddress();
 				connectedClients.add(clientAddress);
 				System.out.println("Connection initiated with Client: " + clientAddress);
-				while(socket.getInputStream().read() != -1){
+				while(!socket.isClosed()){
 					this.respond(socket);
 				}
+				socket.close();
 			} catch (IOException i) {
 				i.printStackTrace();
 			}
