@@ -1,4 +1,4 @@
-package Chat;
+package ServerIntegration;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -28,6 +28,7 @@ public class Client {
 	public void startSession(String host) {
 		Socket socket = null;
 		try {
+			System.out.println("Session initiated");
 			socket = new Socket(host, port);
 			while (!socket.isClosed()) {
 				Scanner scan = new Scanner(System.in);
@@ -36,8 +37,10 @@ public class Client {
 				if (message == "quit") {
 					socket.close();
 				} else {
-					writeMessage(socket, message.getBytes());
-					readResponse(socket);
+					ClientReader ct = new ClientReader();
+					ct.start();
+					writeMessage(socket, message);
+					readMessage(socket);
 				}
 			}
 
@@ -47,33 +50,6 @@ public class Client {
 		} catch (IOException e) {
 			System.out.println(e);
 			System.exit(1);
-		}
-	}
-
-	private static void readResponse(Socket socket) {
-		try {
-			InputStream in = socket.getInputStream();
-			String serverResponse;
-			byte[] inBuffer = new byte[4096];
-			in.read(inBuffer);
-
-			serverResponse = inBuffer.toString();
-
-			System.out.println("Response from server: " + serverResponse);
-
-		} catch (IOException i) {
-			i.printStackTrace();
-		}
-
-	}
-
-	private static void writeMessage(Socket socket, byte[] message) {
-		try {
-			OutputStream out = socket.getOutputStream();
-			out.write(message, 0, message.length);
-			out.flush();
-		} catch (IOException i) {
-			i.printStackTrace();
 		}
 	}
 

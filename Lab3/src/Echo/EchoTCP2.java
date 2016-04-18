@@ -6,6 +6,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**Abstract server heritage removed and EchoTCP2 
+ * now represents the server.*/
 public class EchoTCP2 {
 
 	private final static int DEFAULT_PORT = 30000;
