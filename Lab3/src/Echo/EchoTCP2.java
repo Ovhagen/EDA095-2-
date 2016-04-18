@@ -1,46 +1,55 @@
 package Echo;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
-public class EchoTCP2 extends Server {
+public class EchoTCP2 {
 
-	public final static int DEFAULT_PORT = 30000;
+	private final static int DEFAULT_PORT = 30000;
+	private ServerSocket serverSocket;
+	private ArrayList<InetAddress> connectedClients;
+	private volatile boolean isShutDown = false;
 
 	public EchoTCP2() throws IOException {
-		super();
+		serverSocket = new ServerSocket(DEFAULT_PORT);
+		connectedClients = new ArrayList<InetAddress>();
+		run();
 	}
 
-	@Override
-	public void respond(Socket socket) {
-		InputStream is = null;
-		OutputStream os = null;
+	public void run() {
+		if (isShutDown)
+			return;
+		Socket socket;
 		try {
-			is = socket.getInputStream();
-			byte[] buff = new byte[4096];
-			is.read(buff);
-			
-			String clientMessage = new String(buff);
-			System.out.println("Client Message: '" + clientMessage + "' sent by client " + socket.getInetAddress() );
+			while ((socket = serverSocket.accept()) != null) {
+				InetAddress clientAddress = socket.getInetAddress();
+				connectedClients.add(clientAddress);
+				System.out.println("Connection initiated with Client: " + clientAddress);
 
-			os = socket.getOutputStream();
-			os.write(clientMessage.toUpperCase().getBytes());
-			os.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
+				ServerThread thread = new ServerThread(socket);
+				thread.start();
+			}
+		} catch (IOException i) {
+			i.printStackTrace();
 		}
+	}
+
+	public int connectedClients() {
+		return connectedClients.size();
+	}
+
+	public void shutDown() {
+		this.isShutDown = true;
 	}
 
 	public static void main(String[] args) {
 		try {
-			Server server = new EchoTCP2();
-			server.run();
-		} catch (IOException i) {
-			System.out.println("Could not start server.");
+			new EchoTCP2();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
-
 }
