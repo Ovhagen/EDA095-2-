@@ -25,9 +25,7 @@ public class ServerThread extends Thread {
 
 	public void run() {
 		try {
-			while (!socket.isClosed()) {
-				System.out.println("IN");
-				
+			while (!socket.isClosed()) {		
 				byte[] buff = new byte[4096];
 				is.read(buff);
 				String clientMessage = new String(buff);
@@ -36,6 +34,12 @@ public class ServerThread extends Thread {
 					cm.postMessage(clientMessage);
 				}else if(clientMessage.startsWith("E:")){
 					write(clientMessage);
+				}else if(clientMessage.startsWith("q")){
+					write("Session closed.");
+					socket.close();
+				}
+				else{
+					write("Unknown command.");
 				}
 			}
 			cm.exitChat(this);
@@ -48,9 +52,9 @@ public class ServerThread extends Thread {
 	
 	public synchronized void write(String message){
 		try{
-			os.write(message.substring(2).getBytes());
+			os.write(("Client" + socket.getPort() + ":" + message.substring(2)).getBytes());
 			os.flush();
-			System.out.println("Client Message: '" + message + "' sent by client " + socket.getInetAddress());
+			System.out.println("Client" + socket.getPort() + ": '" + message);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

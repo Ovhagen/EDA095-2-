@@ -7,16 +7,25 @@ public class Mailbox {
 	}
 
 	public synchronized void deposit(String message) {
-		this.message = message;
-		try {
-			wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		while (this.message != null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-
+		this.message = message;
+		notifyAll();
 	}
 
 	public synchronized String clear() {
+		while (message == null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		String temp = message;
 		message = null;
 		notifyAll();
