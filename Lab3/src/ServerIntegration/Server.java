@@ -23,8 +23,8 @@ public class Server {
 		try {
 			while ((socket = serverSocket.accept()) != null) {
 				if (cm.chatStatus()) {
-					InetAddress clientAddress = socket.getInetAddress();
-					System.out.println("Connection initiated with Client: " + clientAddress);
+					int client = socket.getPort();
+					System.out.println("Connection initiated with Client: " + client);
 
 					ServerThread thread = new ServerThread(socket, cm);
 					cm.joinChat(thread);
