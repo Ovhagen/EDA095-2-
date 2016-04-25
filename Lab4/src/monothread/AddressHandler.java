@@ -20,10 +20,10 @@ public class AddressHandler {
 		remainingUrls = new LinkedList<URL>();
 		mails = new ArrayList<URL>();
 		frames = new ArrayList<URL>();
-		visitedLinks = new ArrayList<URL>();
+		visitedLinks = new ArrayList<URL>(limit);
 
 		try {
-			remainingUrls.offer(new URL(startURL));
+			remainingUrls.add(new URL(startURL));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -34,14 +34,21 @@ public class AddressHandler {
 	public int visitedSize(){
 		return visitedLinks.size();
 	}
+	
+	public boolean isDone(){
+		if(visitedLinks.size() < limit){
+			return false;
+		}
+		return true;
+	}
 
 	public void addURL(URL url) {
 		remainingUrls.add(url);
 	}
 
-	public URL registerVisit() {
+	public URL registerVisit(){
 		URL url = remainingUrls.poll();
-		if ((visitedLinks.size() < limit) && !visitedLinks.contains(url)) {
+		if (!visitedLinks.contains(url)) {
 			visitedLinks.add(url);
 			return url;
 		}

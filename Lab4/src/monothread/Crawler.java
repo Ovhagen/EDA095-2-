@@ -19,40 +19,47 @@ public class Crawler {
 	}
 
 	public void run() {
-		URL url;
-		while ((url = que.registerVisit()) != null) {
+		while (!que.isDone()) {
 			try {
+				URL url = que.registerVisit();
+
+				if (url == null) {
+					throw new AddressException("URL already visited!");
+				}
+
 				System.out.println("--------- Visited size = " + que.visitedSize());
-				
+
 				URLConnection uc = url.openConnection();
 				String type = uc.getContentType().toLowerCase();
 				if ((type != null) && !type.startsWith("text/html")) {
-					System.out.println(url + " ignored. Type " + type);
-					return;
+					String message = url + " ignored. Type " + type;
+					throw new AddressException(message);
 				}
 
 				InputStream is = url.openStream();
 				Document doc = Jsoup.parse(is, "UTF-8", url.toString());
-
+				Elements frames = doc.select("frame[src]");
 				Elements links = doc.select("a[href]");
 
+				for (Element frame : frames) {
+					String frameAbsHref = frame.attr("abs:href");
+					que.addFrame((new URL(frameAbsHref.toString())));
+				}
+
 				for (Element link : links) {
-					/*
-					 * if(links.toString().toLowerCase().startsWith("mailto"))
-					 * String linkAbsHref = link.absUrl("href");
-					 * System.out.println("Added link: " + linkAbsHref);
-					 * if(!que.addURL(new URL(linkAbsHref))) break;
-					 */
-
 					String linkAbsHref = link.attr("abs:href");
-					System.out.println("Added link: " + linkAbsHref);
-
-					que.addURL(new URL(linkAbsHref.toString()));
+					// System.out.println("Added link: " + linkAbsHref);
+					if (linkAbsHref.toLowerCase().startsWith("mailto"))
+						que.addMail(new URL(linkAbsHref));
+					else
+						que.addURL(new URL(linkAbsHref));
 				}
 
 				is.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (AddressException e) {
+				System.out.println(e.getMessage());
 			}
 		}
 	}
