@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 
 public class Crawler extends Thread{
 	private AddressHandler que;
+	private String threadName;
 
 	public Crawler(AddressHandler que) {
 		this.que = que;
@@ -27,7 +28,7 @@ public class Crawler extends Thread{
 					throw new AddressException("URL " + url + " already visited!");
 				}
 
-				System.out.println("--------- Visited size = " + que.visitedSize());
+				System.out.println(this.getName() + " handles " + url);
 
 				URLConnection uc = url.openConnection();
 				String type = uc.getContentType().toLowerCase();
@@ -48,7 +49,6 @@ public class Crawler extends Thread{
 
 				for (Element link : links) {
 					String linkAbsHref = link.attr("abs:href");
-					// System.out.println("Added link: " + linkAbsHref);
 					if (linkAbsHref.toLowerCase().startsWith("mailto"))
 						que.addMail(new URL(linkAbsHref));
 					else

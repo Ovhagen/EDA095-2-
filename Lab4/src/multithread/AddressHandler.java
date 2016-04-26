@@ -3,24 +3,26 @@ package multithread;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 public class AddressHandler {
 
 	private Queue<URL> remainingUrls;
 	private int limit;
-	private List<URL> visitedLinks;
-	private List<URL> mails;
-	private List<URL> frames;
+	private Set<URL> visitedLinks;
+	private Set<URL> mails;
+	private Set<URL> frames;
 
 	public AddressHandler(int limit, String startURL) {
 		this.limit = limit;
 		remainingUrls = new LinkedList<URL>();
-		mails = new ArrayList<URL>();
-		frames = new ArrayList<URL>();
-		visitedLinks = new ArrayList<URL>(limit);
+		mails = new HashSet<URL>();
+		frames = new HashSet<URL>();
+		visitedLinks = new HashSet<URL>(limit);
 
 		try {
 			remainingUrls.add(new URL(startURL));
@@ -36,12 +38,6 @@ public class AddressHandler {
 	}
 	
 	public synchronized boolean isDone(){
-		try {
-			wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
 		if(visitedLinks.size() < limit){
 			return false;
 		}
@@ -49,23 +45,19 @@ public class AddressHandler {
 	}
 
 	public synchronized void addURL(URL url) {
-		remainingUrls.add(url);
-		notifyAll();
+		if(!remainingUrls.contains(url)){
+			remainingUrls.add(url);
+		}
 	}
 
 	public synchronized URL registerVisit(){
 		URL url = remainingUrls.poll();
-		if (!visitedLinks.contains(url)) {
 			visitedLinks.add(url);
-			notifyAll();
 			return url;
-		}
-		return null;
 	}
 
 	public synchronized void addMail(URL mailAddress) {
 		mails.add(mailAddress);
-		notifyAll();
 	}
 
 	public int mailsSize() {
@@ -74,7 +66,6 @@ public class AddressHandler {
 
 	public synchronized void addFrame(URL frameAddress) {
 		mails.add(frameAddress);
-		notifyAll();
 	}
 
 	public int framesSize() {

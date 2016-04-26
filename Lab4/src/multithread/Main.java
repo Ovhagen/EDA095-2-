@@ -2,6 +2,7 @@ package multithread;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 	
@@ -14,6 +15,12 @@ public class Main {
 			service.submit(new Crawler(ah));
 		}
 		service.shutdown();
+		
+		try{
+			service.awaitTermination(1, TimeUnit.MINUTES);
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
 		
 		System.out.println("Email addresses found: " + ah.mailsSize() + " URLs");
 		System.out.println("Frame urls found: " + ah.framesSize() + " URLs");
