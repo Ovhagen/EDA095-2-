@@ -27,7 +27,7 @@ public class TimeServerUDP2 extends Thread {
 				dgPacketReceive = new DatagramPacket(bufferReceive, bufferReceive.length);
 				dgSocket.receive(dgPacketReceive);
 				
-				String command = dgPacketReceive.getData().toString();
+				String command = new String(dgPacketReceive.getData(),"UTF-8");
 
 				System.out.println("Command: " + command + "Length: "
 						+ dgPacketReceive.getLength() + "Address: " + dgPacketReceive.getAddress().getHostAddress()
@@ -41,7 +41,8 @@ public class TimeServerUDP2 extends Thread {
 						dgPacketReceive.getPort());
 
 				dgSocket.send(dgPacketSend);
-
+				
+				System.out.println("Sent " + new String(bufferSend));
 			}
 
 		} catch (Exception e) {
