@@ -9,11 +9,9 @@ import java.net.MulticastSocket;
 public class MCServerOffer extends Thread{
 	
 	private DatagramSocket dgSocket;
-	private ClientHandler ch;
 	
-	public MCServerOffer(ClientHandler ch, DatagramSocket dgSocket){
+	public MCServerOffer(DatagramSocket dgSocket){
 		this.dgSocket = dgSocket;
-		this.ch = ch;
 	}
 
 	public void run() {

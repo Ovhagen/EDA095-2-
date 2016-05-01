@@ -16,9 +16,12 @@ public class TimeServerUDP {
 		byte[] bufferSend = new byte[BUFFER_MAX];
 
 		try {
+			
+			dgSocket = new DatagramSocket(PORT);
+			dgPacketReceive = new DatagramPacket(bufferReceive, bufferReceive.length);
+			
 			while (true) {
 				bufferReceive = new byte[BUFFER_MAX];
-				dgPacketReceive = new DatagramPacket(bufferReceive, bufferReceive.length);
 				dgSocket.receive(dgPacketReceive);
 				
 				System.out.println(
