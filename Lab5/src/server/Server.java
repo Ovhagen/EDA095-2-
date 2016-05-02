@@ -17,7 +17,7 @@ public class Server {
 	}
 	
 	public void init(){
-		TimeServerUDP2 time = new TimeServerUDP2(dgSocket);
+		TimeServer time = new TimeServer(dgSocket);
 		MCServerOffer multiCast = new MCServerOffer(dgSocket);
 		multiCast.run();	
 		time.run();
