@@ -28,7 +28,7 @@ public class MCServerOffer extends Thread{
 				System.out.println("Received: " + s);
 				
 				if(s.equals("DISCOVER")){
-					String message = "My identity is: " + InetAddress.getLocalHost().getHostName();
+					String message = "My identity is: " + InetAddress.getLocalHost().getHostName() + " and I offer time service";
 					byte[] sendBuf = message.getBytes();
 					DatagramPacket sdp = new DatagramPacket(sendBuf, sendBuf.length, dp.getAddress(), dp.getPort());
 					dgSocket.send(sdp);

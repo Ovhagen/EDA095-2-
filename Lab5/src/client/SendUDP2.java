@@ -68,7 +68,7 @@ public class SendUDP2 {
 			
 			broadCast.setSoTimeout(2000);
 			broadCast.receive(dgPacketReceived);
-			System.out.println(dgPacketReceived.getData());
+			System.out.println(dgPacketReceived.getData().toString());
 			return dgPacketReceived;
 		} catch (Exception e) {
 			e.printStackTrace();
