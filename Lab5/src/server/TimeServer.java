@@ -32,7 +32,8 @@ public class TimeServer extends Thread {
 				System.out.println("Command: " + command + "Length: "
 						+ dgPacketReceive.getLength() + "Address: " + dgPacketReceive.getAddress().getHostAddress()
 						+ ":" + dgPacketReceive.getPort());
-				if(command.toLowerCase() == "datetime" )
+				
+				if(command.toLowerCase().equals("datetime"))
 					bufferSend = new Date().toString().getBytes();
 					else
 						bufferSend = "Unknown command given.".getBytes();

@@ -25,7 +25,6 @@ public class Server {
 
 	
 	public static void main(String[] args) {
-		ClientHandler ch = new ClientHandler();
 		Server server1 = new Server(30000);
 		Server server2 = new Server(30001);	
 		server1.init();
