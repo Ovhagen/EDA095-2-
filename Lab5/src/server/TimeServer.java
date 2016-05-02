@@ -5,7 +5,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Date;
 
-public class TimeServer extends Thread {
+public class TimeServer implements Runnable {
 	private static final int PORT = 30000;
 	private static final int BUFFER_MAX = 1024 * 4;
 	private DatagramSocket dgSocket;
@@ -27,11 +27,11 @@ public class TimeServer extends Thread {
 				dgPacketReceive = new DatagramPacket(bufferReceive, bufferReceive.length);
 				dgSocket.receive(dgPacketReceive);
 				
-				String command = new String(dgPacketReceive.getData(),"UTF-8");
+				String command = new String(dgPacketReceive.getData(), 0, dgPacketReceive.getLength(), "UTF-8");
+				
+				//String command = new String(dgPacketReceive.getData(),"UTF-8");
 
-				System.out.println("Command: " + command + "Length: "
-						+ dgPacketReceive.getLength() + "Address: " + dgPacketReceive.getAddress().getHostAddress()
-						+ ":" + dgPacketReceive.getPort());
+				System.out.println("Received command: '" + command + "' on timeserver with port " + dgSocket.getLocalPort() + " from " + dgPacketReceive.getAddress().toString());
 				
 				if(command.toLowerCase().equals("datetime"))
 					bufferSend = new Date().toString().getBytes();
@@ -43,7 +43,7 @@ public class TimeServer extends Thread {
 
 				dgSocket.send(dgPacketSend);
 				
-				System.out.println("Sent " + new String(bufferSend));
+				System.out.println("Sending: " + new String(bufferSend));
 			}
 
 		} catch (Exception e) {

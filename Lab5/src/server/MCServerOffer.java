@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-public class MCServerOffer extends Thread{
+public class MCServerOffer implements Runnable{
 	
 	private DatagramSocket dgSocket;
 	
@@ -24,8 +24,9 @@ public class MCServerOffer extends Thread{
 				byte[] buf = new byte[65536];
 				DatagramPacket dp = new DatagramPacket(buf, buf.length);
 				ms.receive(dp);
-				String s = new String(dp.getData(), 0, dp.getLength());
-				System.out.println("Received: " + s);
+				
+				String s = new String(dp.getData(), 0, dp.getLength(), "UTF-8");
+				System.out.println("Received: '" + s + "' on multicast server with port " + dgSocket.getLocalPort());
 				
 				if(s.equals("DISCOVER")){
 					String message = "My identity is: " + InetAddress.getLocalHost().getHostName() + " and I offer time service";

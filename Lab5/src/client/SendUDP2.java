@@ -29,7 +29,7 @@ public class SendUDP2 {
 				InetAddress serverAddress = dgPacketDiscover.getAddress();
 
 				String s = new String(command);
-				System.out.println("Sending command: " + s + " to " + serverAddress);
+				System.out.println("Sending command: '" + s + "' to " + serverAddress + " on port " + serverPort);
 
 				byte[] buf = s.getBytes();
 				dgPacketSend = new DatagramPacket(buf, buf.length, serverAddress, serverPort);
@@ -40,7 +40,7 @@ public class SendUDP2 {
 				dgSocket.receive(dgPacketReceive);
 				String rec = new String(dgPacketReceive.getData());
 				
-				System.out.println("Received: " + rec + " from " + dgPacketDiscover.getAddress().getHostName());
+				System.out.println("Received: '" + rec + "' from " + dgPacketDiscover.getAddress().getHostName());
 
 			} else {
 				throw new IOException("Failed to discover a server");
@@ -68,7 +68,9 @@ public class SendUDP2 {
 			
 			broadCast.setSoTimeout(2000);
 			broadCast.receive(dgPacketReceived);
-			System.out.println(dgPacketReceived.getData().toString());
+			
+			String response = new String(dgPacketReceived.getData(),"UTF-8");
+			System.out.println("Discover response: " + response + " form server with port " + dgPacketReceived.getPort());
 			return dgPacketReceived;
 		} catch (Exception e) {
 			e.printStackTrace();
